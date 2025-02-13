@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 
-const UserPage:NextPage = ()=> {
+const UserPage:NextPage = async ()=> {
     return(
         <div>
             <h1>This is User</h1>
