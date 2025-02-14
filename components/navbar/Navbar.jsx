@@ -91,7 +91,7 @@ const Navbar = () => {
   const renderPageContent = () => {
     switch (currentPage) {
       case 'home':
-        return <div>Home Page Content</div>;
+        return '';
       case 'find-room':
         return <div>Donation Requests Page Content</div>;
       case 'my-profile':
@@ -215,9 +215,9 @@ const Navbar = () => {
       </nav >
 
       {/* Render the current page content */}
-      < div className="p-4" >
+      {/* < div className="p-4" >
         {renderPageContent()}
-      </ div>
+      </ div> */}
     </div >
   );
 };
