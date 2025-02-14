@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import axios from "axios";
-import baseUrl from "../../../helper/baseUrl.js";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store.js";
 import {
@@ -44,8 +42,6 @@ const RoomPage: React.FC = () => {
     (state: RootState) => state.rooms
   );
 
-  console.log(rooms);
-  
 
   const {
     register,
@@ -220,16 +216,16 @@ const RoomPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {rooms.map((room) => (
+            {rooms?.map((room) => (
               <tr key={room.id} className="border-b hover:bg-gray-50">
                 <td className="py-3 px-4">{room.name}</td>
                 <td className="py-3 px-4">{room.capacity}</td>
                 <td className="py-3 px-4">{room.amenities.join(", ")}</td>
                 <td className="py-3 px-4">
-                  {room.image && (
+                  {room?.image && (
                     <img
-                      src={room.image}
-                      alt={room.name}
+                      src={room?.image}
+                      alt={room?.name}
                       className="w-16 h-16 object-cover rounded"
                     />
                   )}
