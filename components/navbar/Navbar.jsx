@@ -1,25 +1,42 @@
-'use client'
-import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
-import React, { useState, useEffect } from "react";
+'use client';
+import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from '@clerk/nextjs';
+import React, { useState, useEffect } from 'react';
 
 const Navbar = () => {
   const [hamburger, setHamburger] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('theme') ? localStorage.getItem('theme') : 'light');
   const [color, setColor] = useState('#00224D');
   const [currentPage, setCurrentPage] = useState('home');
-  const { isLoaded, isSignedIn, user } = useUser();
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  console.log(user);
+  useEffect(() => {
+    const fetchAdminStatus = async () => {
+      try {
+        const response = await fetch('/api/check-role');
+        console.log(response);
+
+        const data = await response.json();
+        setIsAdmin(data.isAdmin);
+      } catch (error) {
+        console.error('Error fetching admin status:', error);
+      }
+    };
+
+    fetchAdminStatus();
+  }, []);
+
+
+  console.log(isAdmin);
 
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
-    const localTheme = localStorage.getItem("theme");
+    const localTheme = localStorage.getItem('theme');
     document.querySelector('html').setAttribute('data-theme', localTheme);
     if (theme === 'dark') {
-      setColor("#ffff");
+      setColor('#ffff');
     } else {
-      setColor("#00224D");
+      setColor('#00224D');
     }
   }, [theme]);
 
@@ -36,8 +53,8 @@ const Navbar = () => {
   };
 
   const handleNavigation = (page) => {
-    setCurrentPage(page); // Update the current page
-    setHamburger(false); // Close the hamburger menu on navigation
+    setCurrentPage(page);
+    setHamburger(false);
   };
 
   const links = (
@@ -46,9 +63,9 @@ const Navbar = () => {
         <button
           onClick={() => handleNavigation('home')}
           style={{
-            color: currentPage === 'home' ? "#FF204E" : color,
+            color: currentPage === 'home' ? '#FF204E' : color,
             fontSize: '18px',
-            background: "transparent",
+            background: 'transparent',
             border: 'none',
             cursor: 'pointer',
           }}
@@ -60,9 +77,9 @@ const Navbar = () => {
         <button
           onClick={() => handleNavigation('find-room')}
           style={{
-            color: currentPage === 'find-room' ? "#FF204E" : color,
+            color: currentPage === 'find-room' ? '#FF204E' : color,
             fontSize: '18px',
-            background: "transparent",
+            background: 'transparent',
             border: 'none',
             cursor: 'pointer',
           }}
@@ -70,21 +87,38 @@ const Navbar = () => {
           Find Room
         </button>
       </li>
-      <li>
-        <button
-          onClick={() => handleNavigation('my-profile')}
-          style={{
-            color: currentPage === 'my-profile' ? "#FF204E" : color,
-            fontSize: '18px',
-            background: "transparent",
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          Profile
-        </button>
-      </li>
-
+      {!isAdmin && (
+        <li>
+          <button
+            onClick={() => handleNavigation('my-profile')}
+            style={{
+              color: currentPage === 'my-profile' ? '#FF204E' : color,
+              fontSize: '18px',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            Profile
+          </button>
+        </li>
+      )}
+      {isAdmin && ( // Conditionally render admin-specific links
+        <li>
+          <button
+            onClick={() => handleNavigation('admin-dashboard')}
+            style={{
+              color: currentPage === 'admin-dashboard' ? '#FF204E' : color,
+              fontSize: '18px',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            Admin Dashboard
+          </button>
+        </li>
+      )}
     </>
   );
 
@@ -104,7 +138,7 @@ const Navbar = () => {
   return (
     <div>
       <nav className={`bg-[#eee] ${theme === 'dark' && 'dark:bg-[#313b47]'} shadow-lg`}>
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
           {/* Left side website name and logo */}
           <button
             onClick={() => handleNavigation('home')}
@@ -207,7 +241,7 @@ const Navbar = () => {
                 type="button"
                 className="text-[#111] bg-[#FDDE55] hover:bg-[#FDDE55] px-2 py-1 rounded-lg font-semibold"
               >
-                <SignInButton/>
+                <SignInButton />
               </button>
             </div>
           </SignedOut>
