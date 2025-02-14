@@ -1,9 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import axios from "axios";
+import baseUrl from '../../../helper/baseUrl.js'
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store.js";
+import { fetchRooms } from "@/redux/slices/roomsSlice";
 
 type Room = {
   id: number;
@@ -24,22 +28,9 @@ const RoomPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
-  const [rooms, setRooms] = useState<Room[]>([
-    {
-      id: 1,
-      name: "Conference Room A",
-      capacity: 10,
-      amenities: ["Projector", "Whiteboard"],
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      id: 2,
-      name: "Meeting Room B",
-      capacity: 6,
-      amenities: ["TV", "Whiteboard"],
-      image: "https://via.placeholder.com/150",
-    },
-  ]);
+
+  const dispatch = useDispatch<AppDispatch>(); // Use AppDispatch type
+  const { rooms, loading, error } = useSelector((state: RootState) => state.rooms);
 
   const {
     register,
@@ -71,11 +62,13 @@ const RoomPage: React.FC = () => {
     reset();
   };
 
+  useEffect(() => {
+    dispatch(fetchRooms());
+  }, [dispatch]);
+
   const uploadImage = async (file: File) => {
     const formData = new FormData();
     formData.append("image", file);
-
-
     const apiKey = process.env.NEXT_PUBLIC_IMGBB_KEY;
 
     if (!apiKey) {
@@ -105,7 +98,7 @@ const RoomPage: React.FC = () => {
   }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/rooms",
+       `${baseUrl}/api/rooms`,
         roomData
       );
       console.log("Room created:", response.data);
@@ -139,15 +132,10 @@ const RoomPage: React.FC = () => {
           id: selectedRoom.id,
           ...roomData,
         };
-        setRooms(
-          rooms.map((room) =>
-            room.id === selectedRoom.id ? updatedRoom : room
-          )
-        );
+        
       } else {
         // Create a new room
         const newRoom = await createRoom(roomData);
-        setRooms([...rooms, newRoom]);
       }
 
       closeModal();
@@ -157,7 +145,7 @@ const RoomPage: React.FC = () => {
   };
 
   const deleteRoom = (id: number) => {
-    setRooms(rooms.filter((room) => room.id !== id));
+    
   };
 
   return (
