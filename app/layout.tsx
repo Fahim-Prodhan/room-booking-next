@@ -35,7 +35,6 @@ export default function RootLayout({
         <ClerkProvider>
           <html data-theme="light" lang="en">
             <body>
-              <Navbar />
               {children}
             </body>
           </html>

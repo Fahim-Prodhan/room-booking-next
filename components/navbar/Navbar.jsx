@@ -1,20 +1,26 @@
 'use client';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from '@clerk/nextjs';
 import React, { useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation'; // or 'next/router' for Pages Router
 
 const Navbar = () => {
   const [hamburger, setHamburger] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('theme') ? localStorage.getItem('theme') : 'light');
   const [color, setColor] = useState('#00224D');
-  const [currentPage, setCurrentPage] = useState('home');
   const [isAdmin, setIsAdmin] = useState(false);
+  const router = useRouter(); 
+  const pathname = usePathname();
 
+  const [currentPage, setCurrentPage] = useState(pathname);
+
+  console.log(currentPage);
+  
+
+  
   useEffect(() => {
     const fetchAdminStatus = async () => {
       try {
         const response = await fetch('/api/check-role');
-        console.log(response);
-
         const data = await response.json();
         setIsAdmin(data.isAdmin);
       } catch (error) {
@@ -24,10 +30,6 @@ const Navbar = () => {
 
     fetchAdminStatus();
   }, []);
-
-
-  console.log(isAdmin);
-
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
@@ -55,15 +57,21 @@ const Navbar = () => {
   const handleNavigation = (page) => {
     setCurrentPage(page);
     setHamburger(false);
+    if (page === '/admin') {
+      router.push('/admin');
+    }
+    if (page === '/') {
+      router.push('/');
+    }
   };
 
   const links = (
     <>
       <li>
         <button
-          onClick={() => handleNavigation('home')}
+          onClick={() => handleNavigation('/')}
           style={{
-            color: currentPage === 'home' ? '#FF204E' : color,
+            color: currentPage === '/' ? '#FF204E' : color,
             fontSize: '18px',
             background: 'transparent',
             border: 'none',
@@ -103,12 +111,12 @@ const Navbar = () => {
           </button>
         </li>
       )}
-      {isAdmin && ( // Conditionally render admin-specific links
+      {isAdmin && (
         <li>
           <button
-            onClick={() => handleNavigation('admin-dashboard')}
+            onClick={() => handleNavigation('/admin')}
             style={{
-              color: currentPage === 'admin-dashboard' ? '#FF204E' : color,
+              color: currentPage === '/admin' ? '#FF204E' : color,
               fontSize: '18px',
               background: 'transparent',
               border: 'none',
@@ -121,19 +129,6 @@ const Navbar = () => {
       )}
     </>
   );
-
-  const renderPageContent = () => {
-    switch (currentPage) {
-      case 'home':
-        return '';
-      case 'find-room':
-        return <div>Donation Requests Page Content</div>;
-      case 'my-profile':
-        return <div>my-profile Page Content</div>;
-      default:
-        return <div>Home Page Content</div>;
-    }
-  };
 
   return (
     <div>
@@ -158,9 +153,7 @@ const Navbar = () => {
                   type="button"
                   className="text-[#fff] bg-[#00224D] hover:bg-[#ffd310] focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 text-center"
                 >
-
                   <SignInButton />
-
                 </button>
               </div>
             </SignedOut>
@@ -246,13 +239,8 @@ const Navbar = () => {
             </div>
           </SignedOut>
         </div>
-      </nav >
-
-      {/* Render the current page content */}
-      {/* < div className="p-4" >
-        {renderPageContent()}
-      </ div> */}
-    </div >
+      </nav>
+    </div>
   );
 };
 
