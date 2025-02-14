@@ -4,10 +4,10 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import axios from "axios";
-import baseUrl from '../../../helper/baseUrl.js'
+import baseUrl from "../../../helper/baseUrl.js";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store.js";
-import { fetchRooms } from "@/redux/slices/roomsSlice";
+import { fetchRooms, deleteRoom,updateRoom,createRoom  } from "@/redux/slices/roomsSlice";
 
 type Room = {
   id: number;
@@ -30,7 +30,9 @@ const RoomPage: React.FC = () => {
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
 
   const dispatch = useDispatch<AppDispatch>(); // Use AppDispatch type
-  const { rooms, loading, error } = useSelector((state: RootState) => state.rooms);
+  const { rooms, loading, error } = useSelector(
+    (state: RootState) => state.rooms
+  );
 
   const {
     register,
@@ -66,6 +68,39 @@ const RoomPage: React.FC = () => {
     dispatch(fetchRooms());
   }, [dispatch]);
 
+  const handleDeleteRoom = async (id: number) => {
+    try {
+      await dispatch(deleteRoom(id)).unwrap(); // Dispatch the deleteRoom action
+      alert("Room deleted successfully");
+      dispatch(fetchRooms());
+    } catch (error) {
+      console.error("Error deleting room:", error);
+      alert("Failed to delete room");
+    }
+  };
+
+  // Handle room creation
+  const handleCreateRoom = async (roomData: Omit<Room, 'id'>) => {
+    try {
+      await dispatch(createRoom(roomData)).unwrap(); // Dispatch the createRoom action
+      alert('Room created successfully');
+    } catch (error) {
+      console.error('Error creating room:', error);
+      alert('Failed to create room');
+    }
+  };
+
+  // Handle room update
+  const handleUpdateRoom = async (roomData: Room) => {
+    try {
+      await dispatch(updateRoom(roomData)).unwrap(); 
+      alert("Room updated successfully");
+    } catch (error) {
+      console.error("Error updating room:", error);
+      alert("Failed to update room");
+    }
+  };
+
   const uploadImage = async (file: File) => {
     const formData = new FormData();
     formData.append("image", file);
@@ -87,27 +122,24 @@ const RoomPage: React.FC = () => {
     const imageData = await response.json();
     console.log("Uploaded Image URL:", imageData.data.url);
 
-    return imageData.data.url; 
+    return imageData.data.url;
   };
 
-  const createRoom = async (roomData: {
-    name: string;
-    capacity: number;
-    amenities: string[];
-    image?: string;
-  }) => {
-    try {
-      const response = await axios.post(
-       `${baseUrl}/api/rooms`,
-        roomData
-      );
-      console.log("Room created:", response.data);
-      return response.data; // Return the created room data
-    } catch (error) {
-      console.error("Error creating room:", error);
-      throw error; // Re-throw the error for handling in the onSubmit function
-    }
-  };
+  // const createRoom = async (roomData: {
+  //   name: string;
+  //   capacity: number;
+  //   amenities: string[];
+  //   image?: string;
+  // }) => {
+  //   try {
+  //     const response = await axios.post(`${baseUrl}/api/rooms`, roomData);
+  //     console.log("Room created:", response.data);
+  //     return response.data; // Return the created room data
+  //   } catch (error) {
+  //     console.error("Error creating room:", error);
+  //     throw error; // Re-throw the error for handling in the onSubmit function
+  //   }
+  // };
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
@@ -129,13 +161,13 @@ const RoomPage: React.FC = () => {
       if (isEditMode && selectedRoom) {
         // Update the room in the list
         const updatedRoom: Room = {
-          id: selectedRoom.id,
-          ...roomData,
+            id: selectedRoom.id,
+            ...roomData,
         };
-        
-      } else {
+        handleUpdateRoom(updatedRoom)
+    } else {
         // Create a new room
-        const newRoom = await createRoom(roomData);
+       handleCreateRoom(roomData)
       }
 
       closeModal();
@@ -144,9 +176,10 @@ const RoomPage: React.FC = () => {
     }
   };
 
-  const deleteRoom = (id: number) => {
-    
-  };
+  // const deleteRoom = async (id: number) => {
+  //   const res = await axios.delete(`${baseUrl}/api/rooms/${id}`);
+  //   alert(res.data.message);
+  // };
 
   return (
     <div className="p-8">
@@ -191,7 +224,7 @@ const RoomPage: React.FC = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => deleteRoom(room.id)}
+                    onClick={() => handleDeleteRoom(room.id)}
                     className="text-red-500 hover:text-red-700"
                   >
                     Delete
@@ -316,6 +349,7 @@ const RoomPage: React.FC = () => {
                         className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600"
                       >
                         {isEditMode ? "Update" : "Save"}
+                        
                       </button>
                     </div>
                   </form>

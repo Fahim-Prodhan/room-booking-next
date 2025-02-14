@@ -91,12 +91,21 @@ const Sidebar = () => {
                         </li>
                         <li>
                             <Link
+                                href="/admin"
+                                className="block p-2 hover:bg-gray-700 rounded transition duration-200"
+                            >
+                                Dashboard
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
                                 href="/admin/rooms"
                                 className="block p-2 hover:bg-gray-700 rounded transition duration-200"
                             >
                                 Rooms
                             </Link>
                         </li>
+                      
 
                         <li>
                             <Link
