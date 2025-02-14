@@ -7,7 +7,12 @@ import axios from "axios";
 import baseUrl from "../../../helper/baseUrl.js";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store.js";
-import { fetchRooms, deleteRoom,updateRoom,createRoom  } from "@/redux/slices/roomsSlice";
+import {
+  fetchRooms,
+  deleteRoom,
+  updateRoom,
+  createRoom,
+} from "@/redux/slices/roomsSlice";
 
 type Room = {
   id: number;
@@ -28,11 +33,19 @@ const RoomPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Default to 5 items per page
 
   const dispatch = useDispatch<AppDispatch>(); // Use AppDispatch type
-  const { rooms, loading, error } = useSelector(
+  const { rooms, loading, error, pagination:{totalPages,totalRooms} } = useSelector(
     (state: RootState) => state.rooms
   );
+
+  console.log(rooms);
+  
 
   const {
     register,
@@ -64,15 +77,16 @@ const RoomPage: React.FC = () => {
     reset();
   };
 
+  // Fetch rooms with pagination
   useEffect(() => {
-    dispatch(fetchRooms());
-  }, [dispatch]);
+    dispatch(fetchRooms({ page: currentPage, limit: itemsPerPage }));
+  }, [dispatch, currentPage, itemsPerPage]);
 
   const handleDeleteRoom = async (id: number) => {
     try {
       await dispatch(deleteRoom(id)).unwrap(); // Dispatch the deleteRoom action
       alert("Room deleted successfully");
-      dispatch(fetchRooms());
+      dispatch(fetchRooms({ page: currentPage, limit: itemsPerPage }));
     } catch (error) {
       console.error("Error deleting room:", error);
       alert("Failed to delete room");
@@ -80,21 +94,23 @@ const RoomPage: React.FC = () => {
   };
 
   // Handle room creation
-  const handleCreateRoom = async (roomData: Omit<Room, 'id'>) => {
+  const handleCreateRoom = async (roomData: Omit<Room, "id">) => {
     try {
       await dispatch(createRoom(roomData)).unwrap(); // Dispatch the createRoom action
-      alert('Room created successfully');
+      alert("Room created successfully");
+      dispatch(fetchRooms({ page: currentPage, limit: itemsPerPage }));
     } catch (error) {
-      console.error('Error creating room:', error);
-      alert('Failed to create room');
+      console.error("Error creating room:", error);
+      alert("Failed to create room");
     }
   };
 
   // Handle room update
   const handleUpdateRoom = async (roomData: Room) => {
     try {
-      await dispatch(updateRoom(roomData)).unwrap(); 
+      await dispatch(updateRoom(roomData)).unwrap();
       alert("Room updated successfully");
+      dispatch(fetchRooms({ page: currentPage, limit: itemsPerPage }));
     } catch (error) {
       console.error("Error updating room:", error);
       alert("Failed to update room");
@@ -125,24 +141,9 @@ const RoomPage: React.FC = () => {
     return imageData.data.url;
   };
 
-  // const createRoom = async (roomData: {
-  //   name: string;
-  //   capacity: number;
-  //   amenities: string[];
-  //   image?: string;
-  // }) => {
-  //   try {
-  //     const response = await axios.post(`${baseUrl}/api/rooms`, roomData);
-  //     console.log("Room created:", response.data);
-  //     return response.data; // Return the created room data
-  //   } catch (error) {
-  //     console.error("Error creating room:", error);
-  //     throw error; // Re-throw the error for handling in the onSubmit function
-  //   }
-  // };
-
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
+      setIsSubmitting(true);
       let imageUrl = selectedRoom?.image;
 
       // Upload image if a new file is provided
@@ -155,34 +156,51 @@ const RoomPage: React.FC = () => {
         name: data.name,
         capacity: parseInt(data.capacity.toString()),
         amenities: data.amenities.split(",").map((item) => item.trim()),
-        image: imageUrl, // Include the image URL
+        image: imageUrl,
       };
 
       if (isEditMode && selectedRoom) {
         // Update the room in the list
         const updatedRoom: Room = {
-            id: selectedRoom.id,
-            ...roomData,
+          id: selectedRoom.id,
+          ...roomData,
         };
-        handleUpdateRoom(updatedRoom)
-    } else {
+        console.log(updatedRoom);
+
+        handleUpdateRoom(updatedRoom);
+      } else {
         // Create a new room
-       handleCreateRoom(roomData)
+        handleCreateRoom(roomData);
       }
 
       closeModal();
     } catch (error) {
       console.error("Error submitting form:", error);
+    } finally {
+      setIsSubmitting(false); // Reset loading state
     }
   };
 
-  // const deleteRoom = async (id: number) => {
-  //   const res = await axios.delete(`${baseUrl}/api/rooms/${id}`);
-  //   alert(res.data.message);
-  // };
+
+
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
-    <div className="p-8">
+    <div className="px-8">
       <h1 className="text-3xl font-bold mb-8">Room Management</h1>
       <button
         onClick={openModal}
@@ -235,6 +253,29 @@ const RoomPage: React.FC = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-6">
+        <button
+          onClick={goToPreviousPage}
+          disabled={currentPage === 1}
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        >
+          Previous
+        </button>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={goToNextPage}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        >
+          Next
+        </button>
+      </div>
+
+      {/* Modal for Add/Edit Room */}
       <Transition appear show={isModalOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
@@ -336,6 +377,7 @@ const RoomPage: React.FC = () => {
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
+
                     <div className="flex justify-end space-x-4">
                       <button
                         type="button"
@@ -346,10 +388,35 @@ const RoomPage: React.FC = () => {
                       </button>
                       <button
                         type="submit"
-                        className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                        disabled={isSubmitting} // Disable button during submission
+                        className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 flex items-center justify-center"
                       >
-                        {isEditMode ? "Update" : "Save"}
-                        
+                        {isSubmitting ? ( // Show spinner during submission
+                          <svg
+                            className="animate-spin h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            />
+                          </svg>
+                        ) : isEditMode ? (
+                          "Update"
+                        ) : (
+                          "Save"
+                        )}
                       </button>
                     </div>
                   </form>

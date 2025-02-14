@@ -46,7 +46,7 @@ const Sidebar = () => {
             {/* Sidebar for Desktop and Mobile */}
             <div
                 className={`fixed inset-y-0 left-0 w-64 bg-gray-800 text-white p-4 transform transition-transform duration-200 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                    } lg:translate-x-0 lg:static lg:transform-none lg:h-screen`}
+                    } lg:translate-x-0 lg:static lg:transform-none lg:min-h-screen`}
             >
                 {/* Close Button for Mobile Sidebar */}
                 {isSidebarOpen && (
