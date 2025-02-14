@@ -3,13 +3,11 @@ import localFont from "next/font/local";
 import "./globals.css";
 import {
   ClerkProvider,
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignOutButton,
-  UserButton,
-  useUser,
 } from "@clerk/nextjs";
+
+import Navbar from "../components/navbar/Navbar";
+import Providers from "./providers";
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,26 +30,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-
   return (
-   
-      <ClerkProvider>
-        <html data-theme="light" lang="en">
-          <body>
-            <header className="flex justify-end items-center p-4 ">
-              <SignedOut>
-                <SignInButton />
-              </SignedOut>
-              <SignedIn>
-                <SignOutButton/>
-                <UserButton />
-              </SignedIn>
-            </header>
-            {children}
-          </body>
-        </html>
-      </ClerkProvider>
-
+    <Providers>
+        <ClerkProvider>
+          <html data-theme="light" lang="en">
+            <body>
+              <Navbar />
+              {children}
+            </body>
+          </html>
+        </ClerkProvider>
+    </Providers>
   );
 }
