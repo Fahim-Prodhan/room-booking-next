@@ -6,7 +6,7 @@ export default async function Home() {
     <div>
       <Navbar />
       <HeaderBanner />
-      <div className="mx-24 mt-12">
+      <div className="lg:mx-24 md:mx-1 mt-12">
         <p className="text-center font-bold text-4xl">Top Rooms</p>
         <RoomsCard />
       </div>

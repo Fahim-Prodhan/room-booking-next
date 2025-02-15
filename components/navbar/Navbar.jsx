@@ -71,7 +71,7 @@ const Navbar = () => {
         <button
           onClick={() => handleNavigation('/')}
           style={{
-            color: currentPage === '/' ? '#FF204E' : color,
+            color: currentPage === '/' ? '#008DDA' : color,
             fontSize: '18px',
             background: 'transparent',
             border: 'none',
@@ -85,7 +85,7 @@ const Navbar = () => {
         <button
           onClick={() => handleNavigation('find-room')}
           style={{
-            color: currentPage === 'find-room' ? '#FF204E' : color,
+            color: currentPage === 'find-room' ? '#008DDA' : color,
             fontSize: '18px',
             background: 'transparent',
             border: 'none',
@@ -100,7 +100,7 @@ const Navbar = () => {
           <button
             onClick={() => handleNavigation('my-profile')}
             style={{
-              color: currentPage === 'my-profile' ? '#FF204E' : color,
+              color: currentPage === 'my-profile' ? '#008DDA' : color,
               fontSize: '18px',
               background: 'transparent',
               border: 'none',
@@ -116,7 +116,7 @@ const Navbar = () => {
           <button
             onClick={() => handleNavigation('/admin')}
             style={{
-              color: currentPage === '/admin' ? '#FF204E' : color,
+              color: currentPage === '/admin' ? '#008DDA' : color,
               fontSize: '18px',
               background: 'transparent',
               border: 'none',
@@ -140,7 +140,7 @@ const Navbar = () => {
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
             <img src={''} className="w-16" alt="" />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap text-[#FF204E]">
+            <span className="self-center text-2xl font-semibold whitespace-nowrap text-[#008DDA]">
               Book Room
             </span>
           </button>
