@@ -10,12 +10,9 @@ const Navbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter(); 
   const pathname = usePathname();
+  const { user } = useUser();
 
   const [currentPage, setCurrentPage] = useState(pathname);
-
-  console.log(currentPage);
-  
-
   
   useEffect(() => {
     const fetchAdminStatus = async () => {
@@ -95,7 +92,7 @@ const Navbar = () => {
           Find Room
         </button>
       </li>
-      {!isAdmin && (
+      {!isAdmin && user  &&(
         <li>
           <button
             onClick={() => handleNavigation('my-profile')}
@@ -108,6 +105,22 @@ const Navbar = () => {
             }}
           >
             Profile
+          </button>
+        </li>
+      )}
+      {!isAdmin && user  &&(
+        <li>
+          <button
+            onClick={() => handleNavigation('favorite-list')}
+            style={{
+              color: currentPage === 'favorite-list' ? '#008DDA' : color,
+              fontSize: '18px',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            Favorite List
           </button>
         </li>
       )}

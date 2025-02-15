@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import roomsReducer from './slices/roomsSlice';
+import favoriteRoomsReducer from './slices/favoriteRoomsSlice';
 
 const store = configureStore({
   reducer: {
     rooms: roomsReducer,
+    favoriteRooms: favoriteRoomsReducer,
   },
 });
 

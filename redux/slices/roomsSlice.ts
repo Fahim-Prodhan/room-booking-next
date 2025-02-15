@@ -3,7 +3,7 @@ import axios from "axios";
 import baseUrl from "@/helper/baseUrl";
 
 export type Room = {
-  id: number;
+  id: string;
   name: string;
   capacity: number;
   amenities: string[];
