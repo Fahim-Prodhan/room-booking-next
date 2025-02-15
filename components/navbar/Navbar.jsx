@@ -8,12 +8,12 @@ const Navbar = () => {
   const [theme, setTheme] = useState(localStorage.getItem('theme') ? localStorage.getItem('theme') : 'light');
   const [color, setColor] = useState('#00224D');
   const [isAdmin, setIsAdmin] = useState(false);
-  const router = useRouter(); 
+  const router = useRouter();
   const pathname = usePathname();
   const { user } = useUser();
 
   const [currentPage, setCurrentPage] = useState(pathname);
-  
+
   useEffect(() => {
     const fetchAdminStatus = async () => {
       try {
@@ -56,9 +56,11 @@ const Navbar = () => {
     setHamburger(false);
     if (page === '/admin') {
       router.push('/admin');
-    }
-    if (page === '/') {
+    }else if (page === '/') {
       router.push('/');
+    }else if (page == '/my-bookings') {
+      router.push('/my-bookings')
+
     }
   };
 
@@ -92,23 +94,23 @@ const Navbar = () => {
           Find Room
         </button>
       </li>
-      {!isAdmin && user  &&(
+      {!isAdmin && user && (
         <li>
           <button
-            onClick={() => handleNavigation('my-profile')}
+            onClick={() => handleNavigation('/my-bookings')}
             style={{
-              color: currentPage === 'my-profile' ? '#008DDA' : color,
+              color: currentPage === '/my-bookings' ? '#008DDA' : color,
               fontSize: '18px',
               background: 'transparent',
               border: 'none',
               cursor: 'pointer',
             }}
           >
-            Profile
+            My Bookings
           </button>
         </li>
       )}
-      {!isAdmin && user  &&(
+      {!isAdmin && user && (
         <li>
           <button
             onClick={() => handleNavigation('favorite-list')}
