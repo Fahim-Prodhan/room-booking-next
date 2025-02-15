@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import baseUrl from "@/helper/baseUrl";
 import UpdateBookingModal from "@/components/MyBookings/UpdateBookingModal";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/redux/store";
+import { fetchBookings, deleteBooking } from "@/redux/slices/bookingsSlice";
+
 interface Booking {
   id: string;
   title: string;
@@ -17,20 +21,21 @@ interface Booking {
 
 const MyBookings = () => {
   const { user } = useUser();
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const dispatch: AppDispatch = useDispatch();
+  const bookings = useSelector((state: RootState) => state.bookings.bookings);
+  const loading = useSelector((state: RootState) => state.bookings.loading);
+  const error = useSelector((state: RootState) => state.bookings.error);
+  const totalPages = useSelector((state: RootState) => state.bookings.totalPages);
+  const currentPage = useSelector((state: RootState) => state.bookings.currentPage);
+
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [limit, setLimit] = useState(10);
-  const [count, SetCount] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
   const pageRange = 2;
 
   const getPageNumbers = () => {
-    const pageNumbers = [];
+    const pageNumbers: (number | string)[] = [];
     const startPage = Math.max(1, currentPage - pageRange);
     const endPage = Math.min(totalPages, currentPage + pageRange);
 
@@ -51,52 +56,23 @@ const MyBookings = () => {
     return pageNumbers;
   };
 
-  const onPageChange = (page: any) => {
+  const onPageChange = (page: number) => {
     if (page < 1) page = 1;
     if (page > totalPages) page = totalPages;
 
-    setCurrentPage(page);
+    if (user) {
+      dispatch(fetchBookings({ userId: user.id, page, limit }));
+    }
   };
 
   useEffect(() => {
     if (!user) return;
-    const fetchBookings = async () => {
-      try {
-        const res = await fetch(
-          `${baseUrl}/api/bookings/user/${user.id}?page=${currentPage}&size=${limit}`
-        );
-        const data = await res.json();
-        
-        if (!res.ok) throw new Error(data.error || "Failed to fetch bookings");
-        setBookings(data.bookings);
-        SetCount(data.totalBookings);
-        setCurrentPage(data.currentPage);
-        setTotalPages(data.totalPages);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBookings();
-  }, [user, limit, currentPage]);
+    dispatch(fetchBookings({ userId: user.id, page: currentPage, limit }));
+  }, [user, limit, currentPage, dispatch]);
 
   const handleCancel = async (bookingId: string) => {
     if (!confirm("Are you sure you want to cancel this booking?")) return;
-
-    try {
-      const res = await fetch(`${baseUrl}/api/bookings/${bookingId}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) throw new Error("Failed to cancel booking");
-
-      setBookings(bookings.filter((b) => b.id !== bookingId));
-      alert("Booking canceled successfully");
-    } catch (err) {
-      alert("Error canceling booking");
-    }
+    dispatch(deleteBooking(bookingId));
   };
 
   const handleEdit = (booking: Booking) => {
@@ -105,23 +81,10 @@ const MyBookings = () => {
   };
 
   const handleUpdate = () => {
-    setLoading(true);
+    if (user) {
+      dispatch(fetchBookings({ userId: user.id, page: currentPage, limit }));
+    }
     setShowModal(false);
-    setError("");
-    // You can re-fetch bookings here to update the list
-    const fetchBookings = async () => {
-      try {
-        const res = await fetch(`${baseUrl}/api/bookings/user/${user?.id}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to fetch bookings");
-        setBookings(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBookings();
   };
 
   return (
@@ -159,7 +122,7 @@ const MyBookings = () => {
                   </td>
                   <td className="p-3 border flex justify-center gap-2">
                     <button
-                      onClick={() => handleEdit(booking)} // Trigger the edit function
+                      onClick={() => handleEdit(booking)}
                       className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                     >
                       Edit
@@ -178,7 +141,6 @@ const MyBookings = () => {
         </div>
       )}
 
-      {/* Show Modal when editing a booking */}
       {showModal && selectedBooking && (
         <UpdateBookingModal
           bookingId={selectedBooking.id}
@@ -191,9 +153,10 @@ const MyBookings = () => {
             endTime: selectedBooking.endTime.split("T")[1].substring(0, 5),
           }}
           onClose={() => setShowModal(false)}
-          onUpdate={handleUpdate} // Pass update function to refresh bookings
+          onUpdate={handleUpdate}
         />
       )}
+
       <div className="flex justify-center mt-4">
         <button
           onClick={() => onPageChange(currentPage - 1)}
@@ -216,7 +179,7 @@ const MyBookings = () => {
           return (
             <button
               key={index}
-              onClick={() => onPageChange(pageNumber)}
+              onClick={() => onPageChange(pageNumber as number)}
               className={`px-4 py-2 rounded mx-1 ${
                 pageNumber === currentPage
                   ? "bg-blue-500 text-white"
