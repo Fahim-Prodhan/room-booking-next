@@ -88,13 +88,13 @@ const RoomsCard: NextPage = () => {
 
           <div className="mx-4 mb-4 flex justify-between">
             <button
-              className="btn btn-sm mt-3 bg-blue-500 text-white"
+              className="btn btn-sm mt-3 bg-[#344CB7] text-white"
               onClick={() => handleViewRoom(room.id)} // Show RoomViewModal
             >
               View
             </button>
             <button
-              className="btn btn-sm mt-3 bg-[#18aeff] text-white"
+              className="btn btn-sm mt-3 bg-[#16C47F] text-white"
               onClick={() => handleBookNow(room.id, room.name)} 
             >
               Book Now

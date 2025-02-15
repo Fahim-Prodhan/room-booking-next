@@ -14,7 +14,7 @@ type UpdateBookingModalProps = {
     endTime: string;
   };
   onClose: () => void;
-  onUpdate: () => void; // Callback to refresh data after update
+  onUpdate: () => void; 
 };
 
 type BookingFormInputs = {
@@ -65,6 +65,8 @@ const UpdateBookingModal: React.FC<UpdateBookingModalProps> = ({
     formState: { errors },
   } = useForm<BookingFormInputs>();
 
+
+
   useEffect(() => {
     // Pre-fill form fields with existing data
     setValue("title", existingData.title);
@@ -80,6 +82,8 @@ const UpdateBookingModal: React.FC<UpdateBookingModalProps> = ({
 
     const startTime = `${selectedDate}T${data.startTime}:00.000Z`;
     const endTime = `${selectedDate}T${data.endTime}:00.000Z`;
+    console.log(bookingId);
+    
 
     try {
       const response = await fetch(`${baseUrl}/api/bookings/${bookingId}`, {
@@ -94,6 +98,9 @@ const UpdateBookingModal: React.FC<UpdateBookingModalProps> = ({
       });
 
       const responseData = await response.json();
+
+      console.log(responseData);
+      
       if (!response.ok) {
         throw new Error(responseData.message || "Failed to update booking");
       }
