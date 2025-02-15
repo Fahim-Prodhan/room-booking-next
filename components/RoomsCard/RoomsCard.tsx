@@ -46,13 +46,16 @@ const RoomsCard: NextPage = () => {
 
   const handleViewRoom = async (roomId: string) => {
     try {
+      // Save the room ID in sessionStorage
+      sessionStorage.setItem("lastViewedRoomId", roomId);
+  
       const response = await fetch(`${baseUrl}/api/rooms/${roomId}`);
       if (response.ok) {
         const data = await response.json();
-        const { room } = data; // Destructure the room object
-        
-        setSelectedRoom(room);   
-        setModalType("view"); // Open the RoomViewModal
+        const { room } = data;
+  
+        setSelectedRoom(room);
+        setModalType("view");
       } else {
         console.error("Failed to fetch room details");
       }
@@ -60,11 +63,12 @@ const RoomsCard: NextPage = () => {
       console.error("Error fetching room details:", error);
     }
   };
+  
 
 
   const closeModal = () => {
-    setModalType(null); // Close any open modal
-    setSelectedRoom(null); // Clear selected room details
+    setModalType(null);
+    setSelectedRoom(null); 
   };
 
   return (
@@ -86,7 +90,7 @@ const RoomsCard: NextPage = () => {
             {favoriteRooms.includes(room.id) ? "Unfavorite" : "Favorite"}
           </button>
 
-          <div className="mx-4 mb-4 flex justify-between">
+          <div className="mx-4 mb-4 flex gap-2">
             <button
               className="btn btn-sm mt-3 bg-[#344CB7] text-white"
               onClick={() => handleViewRoom(room.id)} // Show RoomViewModal
@@ -113,8 +117,8 @@ const RoomsCard: NextPage = () => {
 
       {modalType === "view" && selectedRoom && (
         <RoomViewModal
-          room={selectedRoom}  // Ensure you're passing 'room' correctly
-          onClose={closeModal} // Close the modal when user clicks close
+          room={selectedRoom} 
+          onClose={closeModal} 
         />
       )}
     </div>
