@@ -37,7 +37,7 @@ const initialState: RoomsState = {
 // Async thunk to fetch rooms with pagination
 export const fetchRooms = createAsyncThunk(
   "rooms/fetchRooms",
-  async ({ page, limit, search, capacity }: { page: number; limit: number, search:string, capacity:number }) => {
+  async ({ page, limit, search, capacity }: { page: number; limit: number; search: string; capacity: number }) => {
     const response = await axios.get(`${baseUrl}/api/rooms?page=${page}&limit=${limit}&capacity=${capacity}&search=${search}`);
     return response.data; // Ensure the response includes rooms and pagination metadata
   }
@@ -45,8 +45,8 @@ export const fetchRooms = createAsyncThunk(
 
 // Async thunk to delete a room
 export const deleteRoom = createAsyncThunk("rooms/deleteRoom", async (id: string) => {
-  const response = await axios.delete(`${baseUrl}/api/rooms/${id}`);
-  return response.data; // Return the deleted room ID
+  await axios.delete(`${baseUrl}/api/rooms/${id}`);
+  return id; // Return the deleted room ID
 });
 
 // Async thunk to update a room
@@ -84,7 +84,7 @@ const roomsSlice = createSlice({
 
       // Delete Room
       .addCase(deleteRoom.fulfilled, (state, action) => {
-        state.rooms = state.rooms.filter((room) => room.id !== action.payload.id);
+        state.rooms = state.rooms.filter((room) => room.id !== action.payload);
         state.pagination.totalRooms -= 1; // Decrement totalRooms after deletion
       })
 
