@@ -33,6 +33,7 @@ export const fetchBookings = createAsyncThunk<
 >(
   "bookings/fetchBookings",
   async ({ userId, page = 1, limit = 10 }, { rejectWithValue }) => {
+    
     try {
       const response = await fetch(
         `${baseUrl}/api/bookings/user/${userId}?page=${page}&size=${limit}`

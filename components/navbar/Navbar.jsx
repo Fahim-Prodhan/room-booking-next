@@ -43,6 +43,8 @@ const Navbar = () => {
       router.push('/my-bookings')
     }else if (page == '/favorite-list') {
       router.push('/favorite-list')
+    }else if (page == '/find-rooms') {
+      router.push('/find-rooms')
     }
   };
 
@@ -64,9 +66,9 @@ const Navbar = () => {
       </li>
       <li>
         <button
-          onClick={() => handleNavigation('find-room')}
+          onClick={() => handleNavigation('/find-rooms')}
           style={{
-            color: currentPage === 'find-room' ? '#008DDA' : color,
+            color: currentPage === '/find-rooms' ? '#008DDA' : color,
             fontSize: '18px',
             background: 'transparent',
             border: 'none',

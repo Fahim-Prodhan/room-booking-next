@@ -49,7 +49,7 @@ const RoomsCard: NextPage = () => {
       // Save the room ID in sessionStorage
       sessionStorage.setItem("lastViewedRoomId", roomId);
   
-      const response = await fetch(`${baseUrl}/api/rooms/${roomId}`);
+      const response = await fetch(`${baseUrl}/api/rooms/get-single-room/${roomId}`);
       if (response.ok) {
         const data = await response.json();
         const { room } = data;
@@ -73,33 +73,33 @@ const RoomsCard: NextPage = () => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-      {rooms.slice(0, 6).map((room) => (
-        <div key={room.id} className="bg-white rounded-lg shadow-md overflow-hidden relative">
-          {room.image && <img src={room.image} alt={room.name} className="w-full h-48 object-cover" />}
+      {rooms?.slice(0, 6).map((room) => (
+        <div key={room?.id} className="bg-white rounded-lg shadow-md overflow-hidden relative">
+          {room?.image && <img src={room?.image} alt={room?.name} className="w-full h-48 object-cover" />}
           <div className="p-4">
-            <h2 className="text-xl font-bold mb-2">{room.name}</h2>
-            <p className="text-gray-600 mb-2">Capacity: {room.capacity}</p>
-            <p className="text-gray-600">Amenities: {room.amenities.join(", ")}</p>
+            <h2 className="text-xl font-bold mb-2">{room?.name}</h2>
+            <p className="text-gray-600 mb-2">Capacity: {room?.capacity}</p>
+            <p className="text-gray-600">Amenities: {room?.amenities.join(", ")}</p>
           </div>
 
           {/* Favorite button positioned at the top-right corner */}
           <button
-            className={`absolute border-none shadow-md top-2 right-2 btn btn-sm ${favoriteRooms.includes(room.id) ? "bg-red-500" : "bg-orange-400"} text-white`}
-            onClick={() => dispatch(toggleFavorite(room.id))}
+            className={`absolute border-none shadow-md top-2 right-2 btn btn-sm ${favoriteRooms.includes(room?.id) ? "bg-red-500" : "bg-orange-400"} text-white`}
+            onClick={() => dispatch(toggleFavorite(room?.id))}
           >
-            {favoriteRooms.includes(room.id) ? "Unfavorite" : "Favorite"}
+            {favoriteRooms.includes(room?.id) ? "Unfavorite" : "Favorite"}
           </button>
 
           <div className="mx-4 mb-4 flex gap-2">
             <button
               className="btn btn-sm mt-3 bg-[#344CB7] text-white"
-              onClick={() => handleViewRoom(room.id)} // Show RoomViewModal
+              onClick={() => handleViewRoom(room?.id)} // Show RoomViewModal
             >
               View
             </button>
             <button
               className="btn btn-sm mt-3 bg-[#16C47F] text-white"
-              onClick={() => handleBookNow(room.id, room.name)} 
+              onClick={() => handleBookNow(room?.id, room?.name)} 
             >
               Book Now
             </button>
@@ -109,8 +109,8 @@ const RoomsCard: NextPage = () => {
 
       {modalType === "book" && selectedRoom && (
         <BookingModal
-          roomId={selectedRoom.id}
-          roomName={selectedRoom.name}
+          roomId={selectedRoom?.id}
+          roomName={selectedRoom?.name}
           onClose={closeModal} 
         />
       )}

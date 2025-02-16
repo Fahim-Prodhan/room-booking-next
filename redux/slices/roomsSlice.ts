@@ -19,6 +19,7 @@ type RoomsState = {
     limit: number;
     totalRooms: number;
     totalPages: number;
+    currentPage:number;
   };
 };
 
@@ -30,7 +31,8 @@ const initialState: RoomsState = {
     page: 1,
     limit: 10,
     totalRooms: 0,
-    totalPages: 0,
+    totalPages: 1,
+    currentPage:1,
   },
 };
 
@@ -39,6 +41,7 @@ export const fetchRooms = createAsyncThunk(
   "rooms/fetchRooms",
   async ({ page, limit, search, capacity }: { page: number; limit: number; search: string; capacity: number }) => {
     const response = await axios.get(`${baseUrl}/api/rooms?page=${page}&limit=${limit}&capacity=${capacity}&search=${search}`);
+    console.log(page);
     return response.data; // Ensure the response includes rooms and pagination metadata
   }
 );

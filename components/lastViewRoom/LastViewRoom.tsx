@@ -34,7 +34,7 @@ const LastViewRoom = () => {
 
     const fetchRoom = async () => {
       try {
-        const res = await fetch(`${baseUrl}/api/rooms/${lastViewedRoomId}`);
+        const res = await fetch(`${baseUrl}/api/rooms/get-single-room/${lastViewedRoomId}`);
         const data = await res.json();
         const { room } = data;
 

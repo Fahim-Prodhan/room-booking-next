@@ -74,22 +74,22 @@ const FavoriteRoom = () => {
     setModalType("book"); 
   };
 
-  const handleViewRoom = async (roomId: string) => {
-    try {
-      const response = await fetch(`${baseUrl}/api/rooms/${roomId}`);
-      if (response.ok) {
-        const data = await response.json();
-        const { room } = data; // Destructure the room object
+  // const handleViewRoom = async (roomId: string) => {
+  //   try {
+  //     const response = await fetch(`${baseUrl}/api/rooms/${roomId}`);
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       const { room } = data; // Destructure the room object
         
-        setSelectedRoom(room);   
-        setModalType("view"); // Open the RoomViewModal
-      } else {
-        console.error("Failed to fetch room details");
-      }
-    } catch (error) {
-      console.error("Error fetching room details:", error);
-    }
-  };
+  //       setSelectedRoom(room);   
+  //       setModalType("view"); // Open the RoomViewModal
+  //     } else {
+  //       console.error("Failed to fetch room details");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching room details:", error);
+  //   }
+  // };
 
   const handleFetch = ()=>{
     fetchFavoriteRooms();
@@ -130,12 +130,12 @@ const FavoriteRoom = () => {
           </button>
 
           <div className="mx-4 mb-4 flex justify-between">
-            <button
+            {/* <button
               className="btn btn-sm mt-3 bg-[#344CB7] text-white"
               onClick={() => handleViewRoom(room.id)} // Show RoomViewModal
             >
               View
-            </button>
+            </button> */}
             <button
               className="btn btn-sm mt-3 bg-[#16C47F] text-white"
               onClick={() => handleBookNow(room.id, room.name)} 
