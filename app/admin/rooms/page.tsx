@@ -13,7 +13,7 @@ import {
 } from "@/redux/slices/roomsSlice";
 
 type Room = {
-  id: number;
+  id: string;
   name: string;
   capacity: number;
   amenities: string[];
@@ -35,7 +35,7 @@ const RoomPage: React.FC = () => {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); // Default to 5 items per page
+  const [itemsPerPage, setItemsPerPage] = useState(5); 
 
   const dispatch = useDispatch<AppDispatch>(); // Use AppDispatch type
   const { rooms, loading, error, pagination:{totalPages,totalRooms} } = useSelector(
@@ -75,14 +75,14 @@ const RoomPage: React.FC = () => {
 
   // Fetch rooms with pagination
   useEffect(() => {
-    dispatch(fetchRooms({ page: currentPage, limit: itemsPerPage }));
+    dispatch(fetchRooms({ page: currentPage, limit: itemsPerPage,search:'',capacity:0 }));
   }, [dispatch, currentPage, itemsPerPage]);
 
-  const handleDeleteRoom = async (id: number) => {
+  const handleDeleteRoom = async (id: string) => {
     try {
       await dispatch(deleteRoom(id)).unwrap(); // Dispatch the deleteRoom action
       alert("Room deleted successfully");
-      dispatch(fetchRooms({ page: currentPage, limit: itemsPerPage }));
+      dispatch(fetchRooms({ page: currentPage, limit: itemsPerPage,search:'',capacity:0 }));
     } catch (error) {
       console.error("Error deleting room:", error);
       alert("Failed to delete room");
@@ -94,7 +94,7 @@ const RoomPage: React.FC = () => {
     try {
       await dispatch(createRoom(roomData)).unwrap(); // Dispatch the createRoom action
       alert("Room created successfully");
-      dispatch(fetchRooms({ page: currentPage, limit: itemsPerPage }));
+      dispatch(fetchRooms({ page: currentPage, limit: itemsPerPage,search:'',capacity:0 }));
     } catch (error) {
       console.error("Error creating room:", error);
       alert("Failed to create room");
@@ -106,7 +106,7 @@ const RoomPage: React.FC = () => {
     try {
       await dispatch(updateRoom(roomData)).unwrap();
       alert("Room updated successfully");
-      dispatch(fetchRooms({ page: currentPage, limit: itemsPerPage }));
+      dispatch(fetchRooms({ page: currentPage, limit: itemsPerPage,search:'',capacity:0 }));
     } catch (error) {
       console.error("Error updating room:", error);
       alert("Failed to update room");

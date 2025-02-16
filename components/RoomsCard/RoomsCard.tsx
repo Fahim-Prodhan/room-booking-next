@@ -32,7 +32,7 @@ const RoomsCard: NextPage = () => {
   const { user } = useUser();
 
   useEffect(() => {
-    dispatch(fetchRooms({ page: 1, limit: 6 }));
+    dispatch(fetchRooms({ page: 1, limit: 6, search:'', capacity:0 }));
   }, [dispatch]);
 
   const handleBookNow = (roomId: string, roomName: string) => {
