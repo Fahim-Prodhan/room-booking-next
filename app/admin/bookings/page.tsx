@@ -22,12 +22,11 @@ interface Booking {
 const MyBookings = () => {
   const { user } = useUser();
   const dispatch: AppDispatch = useDispatch();
-  const bookings = useSelector((state: RootState) => state.bookings.bookings);
-  const loading = useSelector((state: RootState) => state.bookings.loading);
-  const error = useSelector((state: RootState) => state.bookings.error);
-  const totalPages = useSelector((state: RootState) => state.bookings.totalPages);
-  const currentPage = useSelector((state: RootState) => state.bookings.currentPage);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -54,39 +53,40 @@ const MyBookings = () => {
       pageNumbers.push(totalPages);
     }
 
+    console.log(pageNumbers);
     return pageNumbers;
   };
+
+  
 
   const onPageChange = (page: number) => {
     if (page < 1) page = 1;
     if (page > totalPages) page = totalPages;
+    setCurrentPage(page)
+  };
 
-    if (user) {
-      dispatch(fetchBookings({ userId: user.id, page, limit }));
+  const fetchBookingsAdmin = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${baseUrl}/api/bookings?page=${currentPage}&size=${limit}`
+      );
+      const data = await response.json();
+      console.log(data);
+
+      setBookings(data.bookings);
+      setCurrentPage(data.currentPage);
+      setTotalPages(data.totalPages);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching admin bookings data:", error);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    const fetchAdminStatus = async () => {
-      try {
-        const response = await fetch('/api/check-role');
-        const data = await response.json();
-        setIsAdmin(data.isAdmin);
-      } catch (error) {
-        console.error('Error fetching admin status:', error);
-      }
-    };
-
-    fetchAdminStatus();
-  }, []);
-
-  
-
-  useEffect(() => {   
-    if (!user) return;
-      dispatch(fetchBookings({ userId: user.id, page: currentPage, limit }));
-    
-  }, [user, limit, currentPage, dispatch]);
+    fetchBookingsAdmin();
+  }, [currentPage,limit]);
 
   const handleCancel = async (bookingId: string) => {
     if (!confirm("Are you sure you want to cancel this booking?")) return;
@@ -99,9 +99,7 @@ const MyBookings = () => {
   };
 
   const handleUpdate = () => {
-    if (user ) {
-      dispatch(fetchBookings({ userId: user.id, page: currentPage, limit })); 
-    }
+    fetchBookingsAdmin();
     setShowModal(false);
   };
 
@@ -111,9 +109,7 @@ const MyBookings = () => {
 
       {loading ? (
         <p>Loading bookings...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
-      ) : bookings.length === 0 ? (
+      ) : bookings?.length === 0 ? (
         <p>No bookings found.</p>
       ) : (
         <div className="overflow-x-auto">
@@ -128,15 +124,15 @@ const MyBookings = () => {
               </tr>
             </thead>
             <tbody>
-              {bookings.map((booking) => (
-                <tr key={booking.id} className="hover:bg-gray-50">
-                  <td className="p-3 border">{booking.room.name}</td>
-                  <td className="p-3 border">{booking.title}</td>
+              {bookings?.map((booking) => (
+                <tr key={booking?.id} className="hover:bg-gray-50">
+                  <td className="p-3 border">{booking?.room.name}</td>
+                  <td className="p-3 border">{booking?.title}</td>
                   <td className="p-3 border">
-                    {new Date(booking.startTime).toLocaleString()}
+                    {new Date(booking?.startTime).toLocaleString()}
                   </td>
                   <td className="p-3 border">
-                    {new Date(booking.endTime).toLocaleString()}
+                    {new Date(booking?.endTime).toLocaleString()}
                   </td>
                   <td className="p-3 border flex justify-center gap-2">
                     <button
@@ -146,7 +142,7 @@ const MyBookings = () => {
                       Edit
                     </button>
                     <button
-                      onClick={() => handleCancel(booking.id)}
+                      onClick={() => handleCancel(booking?.id)}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
                       Cancel
@@ -161,14 +157,14 @@ const MyBookings = () => {
 
       {showModal && selectedBooking && (
         <UpdateBookingModal
-          bookingId={selectedBooking.id}
-          roomName={selectedBooking.room.name}
+          bookingId={selectedBooking?.id}
+          roomName={selectedBooking?.room.name}
           existingData={{
-            title: selectedBooking.title,
-            description: selectedBooking.description,
-            date: selectedBooking.startTime.split("T")[0],
-            startTime: selectedBooking.startTime.split("T")[1].substring(0, 5),
-            endTime: selectedBooking.endTime.split("T")[1].substring(0, 5),
+            title: selectedBooking?.title,
+            description: selectedBooking?.description,
+            date: selectedBooking?.startTime.split("T")[0],
+            startTime: selectedBooking?.startTime.split("T")[1].substring(0, 5),
+            endTime: selectedBooking?.endTime.split("T")[1].substring(0, 5),
           }}
           onClose={() => setShowModal(false)}
           onUpdate={handleUpdate}

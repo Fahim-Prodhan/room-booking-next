@@ -52,6 +52,8 @@ export const fetchBookings = createAsyncThunk<
   }
 );
 
+
+
 // Delete a booking
 export const deleteBooking = createAsyncThunk<
   string,
