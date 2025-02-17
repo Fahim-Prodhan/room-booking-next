@@ -1,21 +1,53 @@
 # Meeting Room Booking
+A Next.js 14-based meeting room booking system with authentication, room management, and booking conflict resolution.
 
-##  Assignment ID/Variant: assignment_category_0010
+## admin email: fahimprodhan.official@gmail.com
+## admin Password: Sroto@23
 
 ## Live Site
-[Visit Volunnet](https://volunnet-1c3ea.web.app)
+[Visit BloodBridge](https://room-booking-next.vercel.app)
 
 
 ## Key Features
 - **Responsive Design:** Ensures optimal viewing across all devices, including mobile, tablet, and desktop, for a seamless browsing experience.
 
-- **Authentication and User Profiles:** Secure password and email-based authentication for login and registration. Logged-in users have access to personalized profiles where they can manage their posts and volunteer requests.
+- **User Roles and Permissions:** The application supports three user roles: Admin and normal user. Each role has specific permissions and access controls to manage the blood donation process efficiently.
 
 - **Interactive Navigation:** Features an intuitive navbar with active route highlighting, facilitating easy exploration throughout the website.
 
-- **User-Friendly Volunteer Posting:** Users can easily create, update, and delete volunteer need posts, specifying details like title, description, category, location, deadline, and the number of volunteers needed.
+- **User Registration and Authentication:** Users can register and log in to the platform. New users are assigned the role of member by default. The registration process includes input fields for email, name, and password.
 
-- **Dynamic Content Display:** The website dynamically displays volunteer need posts, showcasing relevant information like thumbnail, title, category, and deadline. Users can view details and volunteer for posts directly from the platform.
+- **Search and Filter Functionality:** User can Search room filtering by capacity and amenities.
 
-- **Administrative Tools:** Administrators have access to manage posts, including updating details and deleting posts as needed. Additionally, error handling and notifications provide a smooth user experience throughout the site.
+- **Environmental Security:** Sensitive information such as Clerk config keys and MongoDB credentials are stored in environment variables to enhance security and protect sensitive data.
 
+## Technical Stack
+- **Framework**: Next.js 14 (App Router)
+- **UI**: Tailwind CSS
+- **Authentication**: Clerk
+- **State Management**: Redux Toolkit
+- **Form Handling**: React Hook Form
+- **Image Upload**: imgbb 
+- **Deployment**: Vercel
+
+## Setup Instructions
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/[your-username]/meeting-room-booking-system.git
+cd meeting-room-booking-system
+
+```bash
+npm install
+
+```bash
+cp .env.example .env.local
+
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
+CLERK_SECRET_KEY=your_clerk_secret
+# Database
+DATABASE_URL="mysql://user:password@localhost:3306/db_name"
+
+```bash
+npm run dev
