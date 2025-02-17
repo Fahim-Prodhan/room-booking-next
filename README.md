@@ -5,7 +5,7 @@ A Next.js 14-based meeting room booking system with authentication, room managem
 ## admin Password: Sroto@23
 
 ## Live Site
-[Visit BloodBridge](https://room-booking-next.vercel.app)
+[Visit Website](https://room-booking-next.vercel.app)
 
 
 ## Key Features
