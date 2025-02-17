@@ -1,11 +1,30 @@
+'use client'
 import { FaPhone } from "react-icons/fa6";
 import { IoMail } from "react-icons/io5";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaFacebook } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { FaInstagramSquare } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { fetchRooms } from "@/redux/slices/roomsSlice";
+import { AppDispatch, RootState } from "@/redux/store";
 
 const Footer: React.FC = () => {
+
+    const dispatch = useDispatch<AppDispatch>();
+    const { rooms, loading, error } = useSelector(
+      (state: RootState) => state.rooms
+    );
+  
+    useEffect(() => {
+        dispatch(fetchRooms({ page: 1, limit: 6, search: "", capacity: 0 }));
+      }, [dispatch]);
+  
+    if(loading){
+      return <div></div>
+    }
+
     return (
         <div>
             <footer className="footer p-10 bg-gray-900 text-white justify-around">

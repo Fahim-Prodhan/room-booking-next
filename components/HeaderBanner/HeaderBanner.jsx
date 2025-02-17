@@ -1,6 +1,7 @@
 'use client'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y, Autoplay } from 'swiper/modules';
+import { useDispatch, useSelector } from "react-redux";
 
 // Import Swiper styles
 import 'swiper/swiper-bundle.css'
@@ -11,8 +12,22 @@ import banner2 from '../../assets/images/banner2.jpg'
 import banner3 from '../../assets/images/banner3.jpg'
 import 'animate.css';
 import Image from 'next/image';
+import { useEffect } from 'react';
+import { fetchRooms } from "@/redux/slices/roomsSlice";
+
 
 const HeaderBanner = () => {
+
+  const dispatch = useDispatch();
+  const { rooms, loading, error } = useSelector((state) => state.rooms);
+
+  useEffect(() => {
+    dispatch(fetchRooms({ page: 1, limit: 6, search: "", capacity: 0 }));
+  }, [dispatch]);
+
+  if(loading){
+    return <div></div>
+  }
 
   return (
     <div className='md:mt-0 relative'>
