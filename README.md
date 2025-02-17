@@ -34,20 +34,17 @@ A Next.js 14-based meeting room booking system with authentication, room managem
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/[your-username]/meeting-room-booking-system.git
-cd meeting-room-booking-system
+git clone https://github.com/[your-username]/room-booking-next.git
+cd room-booking-next
 
-```bash
 npm install
 
-```bash
 cp .env.example .env.local
+npx prisma generate
 
 # Clerk
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
 CLERK_SECRET_KEY=your_clerk_secret
 # Database
 DATABASE_URL="mysql://user:password@localhost:3306/db_name"
-
-```bash
 npm run dev
