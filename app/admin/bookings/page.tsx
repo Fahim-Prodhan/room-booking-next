@@ -88,6 +88,7 @@ const MyBookings = () => {
   const handleCancel = async (bookingId: string) => {
     if (!confirm("Are you sure you want to cancel this booking?")) return;
     dispatch(deleteBooking(bookingId));
+    fetchBookingsAdmin();
   };
 
   const handleEdit = (booking: Booking) => {
