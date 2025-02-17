@@ -86,7 +86,7 @@ const LastViewRoom = () => {
       ) : room ? (
         <div
           key={room.id}
-          className="bg-white rounded-lg shadow-md overflow-hidden relative w-1/3"
+          className="bg-white rounded-lg shadow-md overflow-hidden relative md:w-1/3 w-full"
         >
           {room.image && (
             <img
