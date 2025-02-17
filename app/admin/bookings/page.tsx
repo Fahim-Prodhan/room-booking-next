@@ -53,7 +53,6 @@ const MyBookings = () => {
       pageNumbers.push(totalPages);
     }
 
-    console.log(pageNumbers);
     return pageNumbers;
   };
 
@@ -72,8 +71,6 @@ const MyBookings = () => {
         `${baseUrl}/api/bookings?page=${currentPage}&size=${limit}`
       );
       const data = await response.json();
-      console.log(data);
-
       setBookings(data.bookings);
       setCurrentPage(data.currentPage);
       setTotalPages(data.totalPages);

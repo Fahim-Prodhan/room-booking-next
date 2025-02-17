@@ -91,14 +91,6 @@ const Sidebar = () => {
                         </li>
                         <li>
                             <Link
-                                href="/"
-                                className="block p-2 hover:bg-gray-700 rounded transition duration-200"
-                            >
-                                Home
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
                                 href="/admin"
                                 className="block p-2 hover:bg-gray-700 rounded transition duration-200"
                             >
@@ -123,6 +115,14 @@ const Sidebar = () => {
                                 Bookings
                             </Link>
                         </li>
+                        <li>
+                            <Link
+                                href="/"
+                                className="block p-2 hover:bg-gray-700 rounded transition duration-200"
+                            >
+                                Home
+                            </Link>
+                        </li>
                     </ul>
                 </nav>
 
@@ -131,10 +131,9 @@ const Sidebar = () => {
                     <div className="mt-8">
                         <button
                             onClick={() => {
-                                // Handle logout logic here
-                                console.log('Logged out');
+                               
                             }}
-                            className="w-full p-2 bg-red-600 hover:bg-red-700 rounded transition duration-200"
+                            className="w-1/2 p-2 bg-red-600 hover:bg-red-700 rounded transition duration-200"
                         >
                             <SignOutButton />
                         </button>

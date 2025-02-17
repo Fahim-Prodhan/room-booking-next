@@ -9,6 +9,7 @@ import { useUser } from "@clerk/nextjs";
 import RoomViewModal from "@/components/RoomsCard/RoomViewModal"; // Import RoomViewModal
 import BookingModal from "@/components/RoomsCard/BookingModal"; // Import BookingModal
 import baseUrl from "@/helper/baseUrl";
+import { useRouter } from "next/navigation";
 
 // Define a type for the room
 interface Room {
@@ -84,7 +85,7 @@ const RoomsCard: NextPage = () => {
 
           {/* Favorite button positioned at the top-right corner */}
           <button
-            className={`absolute border-none shadow-md top-2 right-2 btn btn-sm ${favoriteRooms.includes(room?.id) ? "bg-red-500" : "bg-orange-400"} text-white`}
+            className={`absolute border-none shadow-md top-2 right-2 btn btn-sm ${favoriteRooms?.includes(room?.id) ? "bg-red-500" : "bg-orange-400"} text-white`}
             onClick={() => dispatch(toggleFavorite(room?.id))}
           >
             {favoriteRooms.includes(room?.id) ? "Unfavorite" : "Favorite"}

@@ -1,18 +1,68 @@
-import { NextPage } from 'next';
+"use client";
+import baseUrl from "@/helper/baseUrl";
+import { fetchRooms } from "@/redux/slices/roomsSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { NextPage } from "next";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const AdminPage: NextPage = () => {
+  const [limit] = useState(10);
+
+  const [totalBookings, setTotalBookings] = useState(1);
+
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    pagination: { totalRooms },
+  } = useSelector((state: RootState) => state.rooms);
+
+  useEffect(() => {
+    dispatch(fetchRooms({ page: 1, limit: 6, search: "", capacity: 0 }));
+  }, [dispatch]);
+
+  const fetchBookingsAdmin = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/api/bookings`);
+      const data = await response.json();
+      setTotalBookings(data.totalBookings);
+    } catch (error) {
+      console.error("Error fetching admin bookings data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBookingsAdmin();
+  }, []);
 
   const metrics = [
-    { title: 'Total Rooms', value: 25, change: '+2%' },
-    { title: 'Total Bookings', value: 120, change: '+5%' },
-    { title: 'Active Users', value: 80, change: '+10%' },
-    { title: 'Revenue', value: '$5,000', change: '+8%' },
+    { title: "Total Rooms", value: totalRooms, change: "+2%" },
+    { title: "Total Bookings", value: totalBookings, change: "+5%" },
+    { title: "Active Users", value: 5, change: "+10%" },
+    { title: "Revenue", value: "$5,000", change: "+8%" },
   ];
 
   const recentBookings = [
-    { id: 1, room: 'Conference Room A', user: 'John Doe', date: '2023-10-15', status: 'Confirmed' },
-    { id: 2, room: 'Meeting Room B', user: 'Jane Smith', date: '2023-10-16', status: 'Pending' },
-    { id: 3, room: 'Training Room C', user: 'Alice Johnson', date: '2023-10-17', status: 'Cancelled' },
+    {
+      id: 1,
+      room: "Conference Room A",
+      user: "John Doe",
+      date: "2023-10-15",
+      status: "Confirmed",
+    },
+    {
+      id: 2,
+      room: "Meeting Room B",
+      user: "Jane Smith",
+      date: "2023-10-16",
+      status: "Pending",
+    },
+    {
+      id: 3,
+      room: "Training Room C",
+      user: "Alice Johnson",
+      date: "2023-10-17",
+      status: "Cancelled",
+    },
   ];
 
   return (
@@ -51,11 +101,11 @@ const AdminPage: NextPage = () => {
                 <td className="py-3">
                   <span
                     className={`px-2 py-1 rounded-full text-sm ${
-                      booking.status === 'Confirmed'
-                        ? 'bg-green-100 text-green-700'
-                        : booking.status === 'Pending'
-                        ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-red-100 text-red-700'
+                      booking.status === "Confirmed"
+                        ? "bg-green-100 text-green-700"
+                        : booking.status === "Pending"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-red-100 text-red-700"
                     }`}
                   >
                     {booking.status}

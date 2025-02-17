@@ -112,13 +112,13 @@ const FavoriteRoom = () => {
         <p>No favorite rooms found.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-      {favoriteRoomsData.slice(0, 6).map((room) => (
-        <div key={room.id} className="bg-white rounded-lg shadow-md overflow-hidden relative">
-          {room.image && <img src={room.image} alt={room.name} className="w-full h-48 object-cover" />}
+      {favoriteRoomsData?.slice(0, 6).map((room) => (
+        <div key={room?.id} className="bg-white rounded-lg shadow-md overflow-hidden relative">
+          {room?.image && <img src={room?.image} alt={room?.name} className="w-full h-48 object-cover" />}
           <div className="p-4">
-            <h2 className="text-xl font-bold mb-2">{room.name}</h2>
-            <p className="text-gray-600 mb-2">Capacity: {room.capacity}</p>
-            <p className="text-gray-600">Amenities: {room.amenities.join(", ")}</p>
+            <h2 className="text-xl font-bold mb-2">{room?.name}</h2>
+            <p className="text-gray-600 mb-2">Capacity: {room?.capacity}</p>
+            <p className="text-gray-600">Amenities: {room?.amenities.join(", ")}</p>
           </div>
 
           {/* Favorite button positioned at the top-right corner */}

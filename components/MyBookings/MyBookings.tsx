@@ -128,15 +128,15 @@ const MyBookings = () => {
               </tr>
             </thead>
             <tbody>
-              {bookings.map((booking) => (
+              {bookings?.map((booking) => (
                 <tr key={booking.id} className="hover:bg-gray-50">
-                  <td className="p-3 border">{booking.room.name}</td>
-                  <td className="p-3 border">{booking.title}</td>
+                  <td className="p-3 border">{booking?.room?.name}</td>
+                  <td className="p-3 border">{booking?.title}</td>
                   <td className="p-3 border">
-                    {new Date(booking.startTime).toLocaleString()}
+                    {new Date(booking?.startTime).toLocaleString()}
                   </td>
                   <td className="p-3 border">
-                    {new Date(booking.endTime).toLocaleString()}
+                    {new Date(booking?.endTime).toLocaleString()}
                   </td>
                   <td className="p-3 border flex justify-center gap-2">
                     <button
@@ -146,7 +146,7 @@ const MyBookings = () => {
                       Edit
                     </button>
                     <button
-                      onClick={() => handleCancel(booking.id)}
+                      onClick={() => handleCancel(booking?.id)}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
                       Cancel

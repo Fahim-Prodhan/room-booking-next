@@ -2,30 +2,16 @@
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from '@clerk/nextjs';
 import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation'; // or 'next/router' for Pages Router
+import Link from 'next/link';
 
 const Navbar = () => {
   const [hamburger, setHamburger] = useState(false);
   const [color, setColor] = useState('#00224D');
-  const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useUser();
-
+  const isAdmin = user?.publicMetadata?.role == 'booking_admin'
   const [currentPage, setCurrentPage] = useState(pathname);
-
-  useEffect(() => {
-    const fetchAdminStatus = async () => {
-      try {
-        const response = await fetch('/api/check-role');
-        const data = await response.json();
-        setIsAdmin(data.isAdmin);
-      } catch (error) {
-        console.error('Error fetching admin status:', error);
-      }
-    };
-
-    fetchAdminStatus();
-  }, []);
 
 
   const handleHamburger = () => {
@@ -37,13 +23,13 @@ const Navbar = () => {
     setHamburger(false);
     if (page === '/admin') {
       router.push('/admin');
-    }else if (page === '/') {
+    } else if (page === '/') {
       router.push('/');
-    }else if (page == '/my-bookings') {
+    } else if (page == '/my-bookings') {
       router.push('/my-bookings')
-    }else if (page == '/favorite-list') {
+    } else if (page == '/favorite-list') {
       router.push('/favorite-list')
-    }else if (page == '/find-rooms') {
+    } else if (page == '/find-rooms') {
       router.push('/find-rooms')
     }
   };
@@ -94,38 +80,22 @@ const Navbar = () => {
           </button>
         </li>
       )}
-      {!isAdmin && user && (
-        <li>
-          <button
-            onClick={() => handleNavigation('/favorite-list')}
-            style={{
-              color: currentPage === '/favorite-list' ? '#008DDA' : color,
-              fontSize: '18px',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            Favorite List
-          </button>
-        </li>
-      )}
-      {isAdmin && (
-        <li>
-          <button
-            onClick={() => handleNavigation('/admin')}
-            style={{
-              color: currentPage === '/admin' ? '#008DDA' : color,
-              fontSize: '18px',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            Admin Dashboard
-          </button>
-        </li>
-      )}
+
+      <li>
+        <button
+          onClick={() => handleNavigation('/favorite-list')}
+          style={{
+            color: currentPage === '/favorite-list' ? '#008DDA' : color,
+            fontSize: '18px',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          Favorite List
+        </button>
+      </li>
+
     </>
   );
 
@@ -135,7 +105,7 @@ const Navbar = () => {
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
           {/* Left side website name and logo */}
           <button
-            onClick={() => handleNavigation('home')}
+            onClick={() => handleNavigation('/')}
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
             <img src={''} className="w-16" alt="" />
@@ -150,7 +120,7 @@ const Navbar = () => {
               <div className={`md:block space-x-3 gap-4 hidden`}>
                 <button
                   type="button"
-                  className="text-[#fff] bg-[#00224D] hover:bg-[#ffd310] focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 text-center"
+                  className="text-[#fff] bg-[#00224D] hover:bg-[#2c1551] focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 text-center"
                 >
                   <SignInButton />
                 </button>
@@ -204,6 +174,7 @@ const Navbar = () => {
           >
             <ul className="menu menu-horizontal flex flex-col font-medium lg:p-0 border rtl:space-x-reverse lg:flex-row lg:mt-0 lg:border-0">
               {links}
+             {isAdmin && <Link className='text-[18px]' href="/admin">Admin Dashboard</Link>}
             </ul>
           </div>
         </div>
@@ -226,12 +197,15 @@ const Navbar = () => {
               <svg className="swap-on fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" /></svg>
             </label>
           </div> */}
-          <ul className="font-semibold space-y-3 mt-6">{links}</ul>
+          <ul className="font-semibold space-y-3 mt-6">
+            {links}
+            {isAdmin && <Link className='text-[18px]' href="/admin">Admin Dashboard</Link>}
+          </ul>
           <SignedOut>
             <div className={`md:hidden flex gap-4 mt-6`}>
               <button
                 type="button"
-                className="text-[#111] bg-[#FDDE55] hover:bg-[#FDDE55] px-2 py-1 rounded-lg font-semibold"
+                className="text-[#ffff] bg-[#00224D] hover:bg-[#2c1551] px-2 py-1 rounded-lg font-semibold"
               >
                 <SignInButton />
               </button>

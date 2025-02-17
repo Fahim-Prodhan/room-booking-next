@@ -3,6 +3,7 @@ import HeaderBanner from "../components/HeaderBanner/HeaderBanner";
 import RoomsCard from "../components/RoomsCard/RoomsCard";
 import Footer from "@/components/footer/Footer";
 export default async function Home() {
+
   return (
     <div>
       <Navbar />

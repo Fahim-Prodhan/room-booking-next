@@ -132,7 +132,7 @@ const RoomPage: React.FC = () => {
     );
 
     const imageData = await response.json();
-    console.log("Uploaded Image URL:", imageData.data.url);
+
 
     return imageData.data.url;
   };
@@ -161,7 +161,7 @@ const RoomPage: React.FC = () => {
           id: selectedRoom.id,
           ...roomData,
         };
-        console.log(updatedRoom);
+
 
         handleUpdateRoom(updatedRoom);
       } else {
