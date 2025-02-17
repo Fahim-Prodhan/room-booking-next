@@ -85,8 +85,7 @@ const RoomsCard: NextPage = () => {
     return (
       <div>
         <p className="text-center text-red-500 py-12 text-2xl">
-          Backend is hosted free in Render. <br /> It will take some time to
-          fetch the data for the fast time. <br />
+        The backend is hosted on Render's free tier,<br /> which may result in a longer initial data fetch time.
           Please Wait.....
         </p>
       </div>
