@@ -215,10 +215,10 @@ const FindRoom: NextPage = () => {
               </button>
 
               <div className="mx-4 mb-4 flex gap-2">
-                <button className="btn btn-sm mt-3 bg-[#344CB7] text-white" onClick={() => {}}>
+                <button className="btn btn-sm mt-3 bg-[#344CB7] text-white" onClick={() => {handleViewRoom(room?.id)}}>
                   View
                 </button>
-                <button className="btn btn-sm mt-3 bg-[#16C47F] text-white" onClick={() => {}}>
+                <button className="btn btn-sm mt-3 bg-[#16C47F] text-white" onClick={() =>  handleBookNow(room?.id, room?.name)}>
                   Book Now
                 </button>
               </div>
